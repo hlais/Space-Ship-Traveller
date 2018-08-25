@@ -11,30 +11,37 @@ namespace SpaceShipShooter
 {
     class Ship
     {
-        public Vector2 position = new Vector2(100, 100);
+        
         public int speed = 180;
 
-        public void shipUpdate(GameTime gameTime)
+        static public Vector2 defaultPosition = new Vector2(640, 360);
+        public Vector2 position = defaultPosition;
+
+        Controller controller = new Controller();
+
+        public void shipUpdate(GameTime gameTime, Controller gameController)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-           
-            if (keyboardState.IsKeyDown(Keys.Down))
+            if (gameController.inGame)
             {
-                position.Y += speed * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                position.Y -= speed * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                position.X += speed * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Left))
-            {
-                position.X -= speed* deltaTime;
+                if (keyboardState.IsKeyDown(Keys.Down) && position.Y < 720)
+                {
+                    position.Y += speed * deltaTime;
+                }
+                if (keyboardState.IsKeyDown(Keys.Up) && position.Y > 0)
+                {
+                    position.Y -= speed * deltaTime;
+                }
+                if (keyboardState.IsKeyDown(Keys.Right) && position.X < 1280)
+                {
+                    position.X += speed * deltaTime;
+                }
+                if (keyboardState.IsKeyDown(Keys.Left) && position.X > 0)
+                {
+                    position.X -= speed * deltaTime;
+                }
             }
         }
         

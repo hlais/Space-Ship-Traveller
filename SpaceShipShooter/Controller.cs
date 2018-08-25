@@ -18,9 +18,29 @@ namespace SpaceShipShooter
 
         public int nextSpeed = 220;
 
+        public bool inGame = false;
+
+        public float totalGameTimer = 0f;
+
         public void astriodGeneration(GameTime gameTime)
         {
-            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            if (inGame)
+            {
+                timer -= gameTime.ElapsedGameTime.TotalSeconds;
+                totalGameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
+                KeyboardState kstate = Keyboard.GetState();
+                if (kstate.IsKeyDown(Keys.Enter))
+                {
+                    inGame = true;
+                    totalGameTimer = 0f;
+                    timer = 2d;
+                    maxTime = 2d;
+                    nextSpeed = 220;
+    }
+}
 
             if (timer <= 0)
             {

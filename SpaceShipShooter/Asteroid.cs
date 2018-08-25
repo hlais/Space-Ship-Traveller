@@ -16,6 +16,8 @@ namespace SpaceShipShooter
 
         private int speed;
         public int RADIUS_ASTEROID = 59;
+
+        public bool offScreen = false;
         static Random rand = new Random();
 
         public Asteroid(int newSpeed)
@@ -32,5 +34,7 @@ namespace SpaceShipShooter
 
             position.X -= speed * deltaTime;
         }
+
+
     }
 }

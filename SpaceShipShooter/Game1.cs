@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using System;
+
 namespace SpaceShipShooter
 {
  
@@ -13,7 +15,7 @@ namespace SpaceShipShooter
         Texture2D asteriodSprite;
         Texture2D shipSprite;
         Texture2D spaceSprite;
-        Texture2D timerSprite;
+      
 
         SpriteFont spaceFont;
         SpriteFont timerFont;
@@ -69,7 +71,7 @@ namespace SpaceShipShooter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.shipUpdate(gameTime);
+            player.shipUpdate(gameTime,gameController);
            
 
             gameController.astriodGeneration(gameTime);
@@ -77,7 +79,25 @@ namespace SpaceShipShooter
             for (int i = 0; i < gameController.asteroids.Count; i++)
             {
                 gameController.asteroids[i].AsteroidUpdate(gameTime);
+
+                if (gameController.asteroids[i].position.X < (0 - gameController.asteroids[i].RADIUS_ASTEROID))
+                {
+                    gameController.asteroids[i].offScreen = true;
+                }
+
+                int sum = gameController.asteroids[i].RADIUS_ASTEROID + 30;
+                if (Vector2.Distance(gameController.asteroids[i].position, player.position) < sum)
+                {
+                    gameController.inGame = false;
+                    player.position =  Ship.defaultPosition;
+                    i = gameController.asteroids.Count;
+                    gameController.asteroids.Clear();
+                
+                }
+
             }
+            gameController.asteroids.RemoveAll(x => x.offScreen);
+
       
           
             
@@ -94,12 +114,20 @@ namespace SpaceShipShooter
 
             spriteBatch.Draw(spaceSprite, new Vector2(0f, 0f), Color.White);
             spriteBatch.Draw(shipSprite, new Vector2(player.position.X-34, player.position.Y- 50), Color.White);
+
+            if (gameController.inGame == false)
+            {
+                string menuMessage = "Press ENTER to begin!";
+                Vector2 sizeOfText = spaceFont.MeasureString(menuMessage);
+                spriteBatch.DrawString(spaceFont, menuMessage, new Vector2(640 - sizeOfText.X / 2, 200), Color.White);
+            }
             for (int i = 0; i < gameController.asteroids.Count; i++)
             {
                 Vector2 tempPos = gameController.asteroids[i].position;
                 int tempRadius = gameController.asteroids[i].RADIUS_ASTEROID;
                 spriteBatch.Draw(asteriodSprite, new Vector2(tempPos.X - tempRadius, tempPos.Y - tempRadius), Color.White);
             }
+            spriteBatch.DrawString(timerFont, $"{Math.Round(gameController.totalGameTimer)}", new Vector2(3, 3), Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
